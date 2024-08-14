@@ -11,6 +11,7 @@ class camera {
   double aspect_ratio = 1.0;
   int image_width = 100;
   int samples_per_pixel = 10;
+  int max_depth = 10;
 
   void render(const surface& world);
 
@@ -24,16 +25,14 @@ class camera {
 
   void initialize();
 
-  color ray_color(const ray& r, const surface& world) const;
+  color ray_color(const ray& r, int depth, const surface& world) const;
 
   /**
-  * Get ray from origin to a randomly sampled point near pixel (i,j).
-  **/
+   * Get ray from origin to a randomly sampled point near pixel (i,j).
+   **/
   ray get_ray(int i, int j) const;
 
-  vec3d sample_square() const {
-    return vec3d(random_double() - 0.5, random_double() - 0.5, 0);
-  }
+  vec3d sample_square() const { return vec3d(random_double() - 0.5, random_double() - 0.5, 0); }
 };
 
 #endif

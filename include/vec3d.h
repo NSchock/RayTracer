@@ -4,6 +4,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "math_utils.h"
+
 class vec3d {
  public:
   double e[3];
@@ -37,6 +39,12 @@ class vec3d {
   double length() const { return std::sqrt(length_squared()); }
 
   double length_squared() const { return e[0] * e[0] + e[1] * e[1] + e[2] * e[2]; }
+
+  static vec3d random() { return vec3d(random_double(), random_double(), random_double()); }
+
+  static vec3d random(double min, double max) {
+    return vec3d(random_double(min, max), random_double(min, max), random_double(min, max));
+  }
 };
 
 using point3d = vec3d;
@@ -70,4 +78,22 @@ inline vec3d cross(const vec3d& u, const vec3d& v) {
 }
 
 inline vec3d unit_vector(const vec3d& v) { return v / v.length(); }
+
+inline vec3d random_in_unit_sphere() {
+  while (true) {
+    vec3d p = vec3d::random(-1, 1);
+    if (p.length_squared() < 1) return p;
+  }
+}
+
+inline vec3d random_unit_vector() { return unit_vector(random_in_unit_sphere()); }
+
+inline vec3d random_outward_vector(vec3d& normal) {
+  vec3d on_unit_sphere = random_unit_vector();
+  if (dot(on_unit_sphere, normal) > 0) {
+    return on_unit_sphere;
+  } else {
+    return -on_unit_sphere;
+  }
+}
 #endif
