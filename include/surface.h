@@ -1,13 +1,18 @@
 #ifndef SURFACE_H
 #define SURFACE_H
 
+#include <memory>
+
 #include "interval.h"
 #include "ray.h"
+
+class material;
 
 class hit_record {
  public:
   point3d p;
   vec3d normal;
+  std::shared_ptr<material> mat;
   double t;
   bool front_facing;  // true means the ray emanates from outside the object
 

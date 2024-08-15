@@ -13,6 +13,7 @@ set(HEADERS
     include/surface_list.h
     include/interval.h
     include/camera.h
+    include/material.h
 )
 
 set(SOURCE
@@ -21,6 +22,7 @@ set(SOURCE
     src/surface_list.cpp
     src/interval.cpp
     src/camera.cpp
+    src/material.cpp
 )
 
 add_executable(RayTracer ${HEADERS} ${SOURCE})

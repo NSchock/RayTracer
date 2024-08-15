@@ -40,6 +40,10 @@ class vec3d {
 
   double length_squared() const { return e[0] * e[0] + e[1] * e[1] + e[2] * e[2]; }
 
+  bool near_zero() const {
+    auto s = 1e-8;
+    return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
+  }
   static vec3d random() { return vec3d(random_double(), random_double(), random_double()); }
 
   static vec3d random(double min, double max) {
@@ -96,4 +100,7 @@ inline vec3d random_outward_vector(vec3d& normal) {
     return -on_unit_sphere;
   }
 }
+
+inline vec3d reflect(const vec3d& v, const vec3d& n) { return v - 2 * dot(v, n) * n; }
+
 #endif
