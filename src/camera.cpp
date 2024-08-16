@@ -2,6 +2,7 @@
 
 #include "color.h"
 #include "material.h"
+#include "math_utils.h"
 #include "vec3d.h"
 
 void camera::initialize() {
@@ -10,19 +11,25 @@ void camera::initialize() {
 
   pixel_samples_scale = 1.0 / samples_per_pixel;
 
-  center = point3d(0, 0, 0);
+  center = camera_center;
 
-  double focal_length = 1.0;
-  double viewport_height = 2.0;
+  double focal_length = (camera_center - look_at).length();
+  double theta = degrees_to_radians(vfov);
+  double h = std::tan(theta / 2);
+  double viewport_height = 2 * h * focal_length;
   double viewport_width{viewport_height * (double(image_width) / image_height)};
 
-  vec3d viewport_hor(viewport_width, 0, 0);
-  vec3d viewport_vert(0, -viewport_height, 0);
+  w = unit_vector(camera_center - look_at);
+  u = unit_vector(cross(vup, w));
+  v = cross(w, u);
+
+  vec3d viewport_hor = viewport_width * u;
+  vec3d viewport_vert = viewport_height * (-v);
 
   pixel_delta_hor = viewport_hor / image_width;
   pixel_delta_vert = viewport_vert / image_height;
 
-  point3d viewport_upper_left = center - vec3d(0, 0, focal_length) - viewport_hor / 2.0 - viewport_vert / 2.0;
+  point3d viewport_upper_left = center - (focal_length * w) - viewport_hor / 2.0 - viewport_vert / 2.0;
   pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_hor + pixel_delta_vert);
 }
 

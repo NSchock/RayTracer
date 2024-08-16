@@ -24,5 +24,10 @@ int main() {
   cam.samples_per_pixel = 100;
   cam.max_depth = 50;
 
+  cam.vfov = 90;
+  cam.camera_center = point3d(-2, 2, 1);
+  cam.look_at = point3d(0, 0, -1);
+  cam.vup = vec3d(0, 1, 0);
+
   cam.render(world);
 }

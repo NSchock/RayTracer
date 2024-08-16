@@ -5,6 +5,7 @@
 #include "math_utils.h"
 #include "ray.h"
 #include "surface.h"
+#include "vec3d.h"
 
 class camera {
  public:
@@ -12,6 +13,11 @@ class camera {
   int image_width = 100;
   int samples_per_pixel = 10;
   int max_depth = 10;
+
+  double vfov = 90; // vertical view angle
+  point3d camera_center{0,0,0};
+  point3d look_at{0,0,-1}; // the point the camera center is looking at
+  vec3d vup{0,1,0}; // upwards direction from camera center
 
   void render(const surface& world);
 
@@ -22,6 +28,7 @@ class camera {
   point3d pixel00_loc;
   vec3d pixel_delta_hor;
   vec3d pixel_delta_vert;
+  vec3d u,v,w; // camera frame basis vectors
 
   void initialize();
 
