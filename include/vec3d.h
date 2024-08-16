@@ -103,4 +103,11 @@ inline vec3d random_outward_vector(vec3d& normal) {
 
 inline vec3d reflect(const vec3d& v, const vec3d& n) { return v - 2 * dot(v, n) * n; }
 
+inline vec3d refract(const vec3d& uv, const vec3d& n, double refraction_ratio) {
+  double cos_theta = std::fmin(dot(-uv, n), 1.0);
+  vec3d r_out_perp = refraction_ratio * (uv + cos_theta * n);
+  vec3d r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * n;
+  return r_out_perp + r_out_parallel;
+}
+
 #endif
