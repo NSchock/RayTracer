@@ -18,6 +18,9 @@ class camera {
   point3d camera_center{0,0,0};
   point3d look_at{0,0,-1}; // the point the camera center is looking at
   vec3d vup{0,1,0}; // upwards direction from camera center
+  
+  double defocus_angle = 0;
+  double focus_dist = 10;
 
   void render(const surface& world);
 
@@ -30,6 +33,9 @@ class camera {
   vec3d pixel_delta_vert;
   vec3d u,v,w; // camera frame basis vectors
 
+  vec3d defocus_disk_hor;
+  vec3d defocus_disk_vert;
+
   void initialize();
 
   color ray_color(const ray& r, int depth, const surface& world) const;
@@ -40,6 +46,8 @@ class camera {
   ray get_ray(int i, int j) const;
 
   vec3d sample_square() const { return vec3d(random_double() - 0.5, random_double() - 0.5, 0); }
+
+  point3d defocus_disk_sample() const;
 };
 
 #endif

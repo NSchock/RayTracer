@@ -29,5 +29,8 @@ int main() {
   cam.look_at = point3d(0, 0, -1);
   cam.vup = vec3d(0, 1, 0);
 
+  cam.defocus_angle = 10.0;
+  cam.focus_dist = 3.4;
+
   cam.render(world);
 }

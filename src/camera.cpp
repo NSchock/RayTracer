@@ -1,5 +1,7 @@
 #include "camera.h"
 
+#include <cmath>
+
 #include "color.h"
 #include "material.h"
 #include "math_utils.h"
@@ -13,10 +15,9 @@ void camera::initialize() {
 
   center = camera_center;
 
-  double focal_length = (camera_center - look_at).length();
   double theta = degrees_to_radians(vfov);
   double h = std::tan(theta / 2);
-  double viewport_height = 2 * h * focal_length;
+  double viewport_height = 2 * h * focus_dist;
   double viewport_width{viewport_height * (double(image_width) / image_height)};
 
   w = unit_vector(camera_center - look_at);
@@ -29,8 +30,12 @@ void camera::initialize() {
   pixel_delta_hor = viewport_hor / image_width;
   pixel_delta_vert = viewport_vert / image_height;
 
-  point3d viewport_upper_left = center - (focal_length * w) - viewport_hor / 2.0 - viewport_vert / 2.0;
+  point3d viewport_upper_left = center - (focus_dist * w) - viewport_hor / 2.0 - viewport_vert / 2.0;
   pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_hor + pixel_delta_vert);
+
+  double defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle / 2));
+  defocus_disk_hor = u * defocus_radius;
+  defocus_disk_vert = v * defocus_radius;
 }
 
 color camera::ray_color(const ray& r, int depth, const surface& world) const {
@@ -61,7 +66,9 @@ ray camera::get_ray(int i, int j) const {
   // Should update to a more careful method
   vec3d offset = sample_square();
   point3d pixel_sample = pixel00_loc + (i + offset.x()) * pixel_delta_hor + (j + offset.y()) * pixel_delta_vert;
-  return ray(center, pixel_sample - center);
+
+  point3d ray_origin = (defocus_angle <= 0) ? center : defocus_disk_sample();
+  return ray(ray_origin, pixel_sample - center);
 }
 
 void camera::render(const surface& world) {
@@ -80,4 +87,9 @@ void camera::render(const surface& world) {
     }
   }
   std::clog << "\rDone.                 \n";
+}
+
+point3d camera::defocus_disk_sample() const {
+  point3d p = random_in_unit_disk();
+  return center + (p[0] * defocus_disk_hor) + (p[1] * defocus_disk_vert);
 }

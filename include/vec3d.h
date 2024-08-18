@@ -90,6 +90,13 @@ inline vec3d random_in_unit_sphere() {
   }
 }
 
+inline vec3d random_in_unit_disk() {
+  while (true) {
+    vec3d p{random_double(-1, 1), random_double(-1, 1), 0};
+    if (p.length_squared() < 1) return p;
+  }
+}
+
 inline vec3d random_unit_vector() { return unit_vector(random_in_unit_sphere()); }
 
 inline vec3d random_outward_vector(vec3d& normal) {
